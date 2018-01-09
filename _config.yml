@@ -6,9 +6,10 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: BeyondTheClouds blog
+title: BeyondTheClouds Blog
 email: discovery-contact@inria.fr
-description: > # this means to ignore newlines until "baseurl:"
+description: "The <a href='https://beyondtheclouds.github.io/'>Discovery</a> Initiative.
+  Discover what could happen beyond the Clouds!"
 baseurl: "/blog" # the subpath of your site, e.g. /blog
 url: "https://beyondtheclouds.github.io/blog/" # the base hostname & protocol for your site
 twitter_username: BeyondClouds_io

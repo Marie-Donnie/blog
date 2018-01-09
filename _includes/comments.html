@@ -3,7 +3,7 @@
 <section class="post-comments">
 
   {% if site.data.comments[post_slug] %}
-  <h2>Comments</h2>
+  <h1>Comments</h1>
 
     {% assign comments = site.data.comments[post_slug] | sort %}
 
@@ -15,41 +15,44 @@
       {% assign message = comment[1].message %}
       {% assign index = forloop.index %}
 
-      <article id="comment-{{ index }}">
+      <article id="comment-{{ index }}" class="comment">
 	    	  <img class="comment-avatar" src="https://www.gravatar.com/avatar/{{ email }}?d=mm&s=100">
-	    	  <h3 class="comment-author">
-	    		  {% if url and (url != '@url') %}
-	    			    <a rel="nofollow" href="{{ url }}">{{ name }}</a>
-	    		  {% else %}
-	    			  {{ name }}
-	    		  {% endif %}
-	    	  </h3>
-	    	  <p class="comment-date">
-	    			{% if index %}<a href="#comment-{{ index }}">{% endif %}
-              {% assign day = date | date: "%d" | plus: 0 %}{{ date | date: "%B" }} {% case day %}{% when 1 or 21 or 31 %}{{ day }}st,{% when 2 or 22 %}{{ day }}nd, {% when 3 or 23 %}{{ day }}rd,{% else %}{{ day }}th,{% endcase %} {{ date | date: "%Y" }}, {{ date | date: "%I" }}.{{ date | date: "%M" }}{{ date | date: "%p" | downcase }}
-	    			{% if index %}</a>{% endif %}
-	    	  </p>
-	    	  <div class="comment-body"> {{ message | markdownify }} </div>
+          <div class="comment-content-wrapper">
+	    	      <h3 class="comment-author">
+	    		        {% if url and (url != '@url') %}
+	    			      <a rel="nofollow" href="{{ url }}">{{ name }}</a>
+	    		        {% else %}
+	    			      {{ name }}
+	    		        {% endif %}
+	    	      </h3>
+	    	      <p class="comment-date">
+	    			      {% if index %}<a href="#comment-{{ index }}">{% endif %}
+                  {% assign day = date | date: "%d" | plus: 0 %}{{ date | date: "%B" }} {% case day %}{% when 1 or 21 or 31 %}{{ day }}st,{% when 2 or 22 %}{{ day }}nd, {% when 3 or 23 %}{{ day }}rd,{% else %}{{ day }}th,{% endcase %} {{ date | date: "%Y" }}, {{ date | date: "%I" }}.{{ date | date: "%M" }}{{ date | date: "%p" | downcase }}
+	    			      {% if index %}</a>{% endif %}
+	    	      </p>
+	    	      <div class="comment-body"> {{ message | markdownify }} </div>
+          </div>
       </article>
     {% endfor %}
   {% endif %}
 
   <!-- Post a new comment -->
-  <h2>Leave a comment</h2>
+  <h1>Leave a comment</h1>
 
   {% assign repo = site.repository %}
   <form id="comment-new" class="form" action="https://api.staticman.net/v2/entry/{{ repo }}/gh-pages/comments" method="POST">
       <!-- Your comment as been submitted and is under review -->
-      <input name="options[redirect]" type="hidden" value="https://beyondtheclouds.github.io/blog/shipped-comment.html">
+      <input name="options[redirect]" type="hidden" value="{{ site.url }}/shipped-comment.html">
 
       <!-- e.g. "2016-01-02-this-is-a-post" -->
       <input name="options[slug]" type="hidden" value="{{ page.slug }}">
 
-      <input name="fields[name]" placeholder="Name" required="" type="text">
-      <input name="fields[email]" placeholder="E-mail address (will not be public)" required="" type="email">
-      <input name="fields[url]" placeholder="Website (optional)" type="url">
-      <textarea name="fields[message]" rows="10" placeholder="Comment. Markdown is accepted." required=""></textarea>
+      <!-- Form fields -->
+      <input class="form-field" name="fields[name]" placeholder="Name" required="" type="text">
+      <input class="form-field" name="fields[email]" placeholder="E-mail address (will not be public)" required="" type="email">
+      <input class="form-field" name="fields[url]" placeholder="Website (optional)" type="url">
+      <textarea class="form-field" name="fields[message]" rows="10" placeholder="Comment. Markdown is accepted." required=""></textarea>
 
-      <button type="submit">Go!</button>
+      <button type="submit">SUBMIT</button>
   </form>
 </section>

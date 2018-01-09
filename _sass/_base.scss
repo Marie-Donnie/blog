@@ -38,7 +38,6 @@ ul, ol, dl, figure,
 }
 
 
-
 /**
  * Images
  */
@@ -82,9 +81,12 @@ li {
  * Headings
  */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: $base-font-weight;
+    font-family: "Crimson Text", serif;
 }
 
+post-list > li > h2 {
+    margin-bottom: 0px;
+}
 
 
 /**
@@ -99,7 +101,6 @@ a {
     }
 
     &:hover {
-        color: $text-color;
         text-decoration: underline;
     }
 }
@@ -129,14 +130,16 @@ blockquote {
  */
 pre,
 code {
-    font-size: 15px;
-    border: 1px solid $grey-color-light;
+    /* border: 1px solid $grey-color-light; */
     border-radius: 3px;
-    background-color: #eef;
+    background-clip: padding-box;
+    font-size: 15px;
+    margin: auto 1px;
 }
 
 code {
-    padding: 1px 5px;
+    border: 1px solid $grey-color-light;
+    padding: 2px 5px;
 }
 
 pre {
@@ -172,6 +175,10 @@ pre {
     }
 }
 
+.jumbo {
+    text-align: center;
+    padding-top: 75px;
+}
 
 
 /**
