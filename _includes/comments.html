@@ -16,21 +16,21 @@
       {% assign index = forloop.index %}
 
       <article id="comment-{{ index }}" class="comment">
-	    	  <img class="comment-avatar" src="https://www.gravatar.com/avatar/{{ email }}?d=mm&s=100">
+          <img class="comment-avatar" src="https://www.gravatar.com/avatar/{{ email }}?d=mm&s=100">
           <div class="comment-content-wrapper">
-	    	      <h3 class="comment-author">
-	    		        {% if url and (url != '@url') %}
-	    			      <a rel="nofollow" href="{{ url }}">{{ name }}</a>
-	    		        {% else %}
-	    			      {{ name }}
-	    		        {% endif %}
-	    	      </h3>
-	    	      <p class="comment-date">
-	    			      {% if index %}<a href="#comment-{{ index }}">{% endif %}
+              <h3 class="comment-author">
+                  {% if url and (url != '') %}
+                  <a rel="nofollow" href="{{ url }}">{{ name }}</a>
+                  {% else %}
+                  {{ name }}
+                  {% endif %}
+              </h3>
+              <p class="comment-date">
+                  {% if index %}<a href="#comment-{{ index }}">{% endif %}
                   {% assign day = date | date: "%d" | plus: 0 %}{{ date | date: "%B" }} {% case day %}{% when 1 or 21 or 31 %}{{ day }}st,{% when 2 or 22 %}{{ day }}nd, {% when 3 or 23 %}{{ day }}rd,{% else %}{{ day }}th,{% endcase %} {{ date | date: "%Y" }}, {{ date | date: "%I" }}.{{ date | date: "%M" }}{{ date | date: "%p" | downcase }}
-	    			      {% if index %}</a>{% endif %}
-	    	      </p>
-	    	      <div class="comment-body"> {{ message | markdownify }} </div>
+                  {% if index %}</a>{% endif %}
+              </p>
+              <div class="comment-body"> {{ message | markdownify }} </div>
           </div>
       </article>
     {% endfor %}
@@ -45,7 +45,7 @@
       <input name="options[redirect]" type="hidden" value="{{ site.url }}/shipped-comment.html">
 
       <!-- e.g. "2016-01-02-this-is-a-post" -->
-      <input name="options[slug]" type="hidden" value="{{ page.slug }}">
+      <input name="options[slug]" type="hidden" value="{{ post_slug }}">
 
       <!-- Form fields -->
       <input class="form-field" name="fields[name]" placeholder="Name" required="" type="text">
