@@ -1,6 +1,6 @@
 ---
 layout: post
-title: The EnosStack to help experimenters in making reproducible research
+title: Make Reproducible Experimental-Driven Research Thanks to The EnoStack 
 date: 2018-01-22
 categories: EnosStack
 author: avankemp
