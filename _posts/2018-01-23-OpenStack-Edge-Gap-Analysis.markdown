@@ -3,7 +3,7 @@ layout: post
 title: Gap Analysis of the OpenStack codebase w.r.t Edge Computing Challenges - A first step
 date: 2018-01-23
 categories: OpenStack
-author: ad_ri3n_
+author: Adrien Lebre
 ---
 
 With the next [OpenStack PTG](https://www.openstack.org/ptg/) in mind,
@@ -25,11 +25,3 @@ Obviously, this study is an ongoing action that should be refined with
 the expertise of additional folks, but at least we started it!
 Further information available at
 [https://etherpad.openstack.org/p/edge-gap-analysis](https://etherpad.openstack.org/p/edge-gap-analysis).
-
-
-
-
-
-
-
-

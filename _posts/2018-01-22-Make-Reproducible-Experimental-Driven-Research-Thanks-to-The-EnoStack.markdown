@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Make Reproducible Experimental-Driven Research Thanks to The EnoStack 
+title: Make Reproducible Experimental-Driven Research Thanks to The EnoStack
 date: 2018-01-22
 categories: EnosStack
-author: avankemp
+author: Alexandre van Kempen
 ---
 
 Experimental studies are an integral part of the Inria's Discovery initiative as we strongly believe that the solutions we design have to be validated in practical contexts. However, designing, deploying and validating an experiment can quickly become a tedious and time-consuming endeavor, particularly when targeting large scale and real testbeds (e.g. Chameleon, Grid’5000, etc.). Rings a bell... ?
@@ -14,10 +14,3 @@ In order to help experimenters in this daunting task, we created the EnosStack, 
 We are actually using the EnosStack in the context of the OpenStack performance working group to help us conducting the numerous experiments of this [test plan](https://review.openstack.org/#/c/491818/).
 We just published a report detailing its concepts and its implementation details, if you are interested it's [there](https://hal.inria.fr/hal-01689726).
 Hoping that the EnosStack will save some of your time too !
-
-
-
-
-
-
-

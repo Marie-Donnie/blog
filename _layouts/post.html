@@ -5,7 +5,18 @@ layout: default
 
   <header class="post-header">
     <h1 class="post-title" itemprop="name headline">{{ page.title }}</h1>
-    <p class="post-meta"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>{% if page.author %} • {% assign author = site.data.authors[page.author] %} <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><a href="{{ author.link }}">{{ author.name }}</a></span></span>{% endif %}</p>
+    <p class="post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>
+        {% if page.author %} •
+        {% assign authors = page.author | split: ", " %}
+        <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            {% for currAuthor in authors %}
+              {% assign currAuthorInfo = site.data.authors[currAuthor] %}
+              <span itemprop="name"><a href="{{ currAuthorInfo.link }}">{{ currAuthor }}</a></span>{% unless forloop.last %}, {% endunless %}
+            {% endfor %}
+        </span>
+        {% endif %}
+    </p>
   </header>
 
   <div class="post-content" itemprop="articleBody">

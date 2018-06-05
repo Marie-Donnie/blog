@@ -18,4 +18,4 @@ repository: "BeyondTheClouds/blog"
 
 # Build settings
 markdown: kramdown
-
+highlighter: rouge

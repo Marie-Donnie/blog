@@ -3,7 +3,7 @@ layout: post
 title: A POC of OpenStack Keystone over CockroachDB
 date: 2017-12-22
 categories: OpenStack CockroachDB
-author: rcherrueau
+author: Ronan-Alexandre Cherrueau
 ---
 In the [Inria&rsquo;s Discovery initiative](https://beyondtheclouds.github.io/), we get in touch with
 [CockroachLabs](https://www.cockroachlabs.com/docs/stable/transactions.html#transaction-retries) guys with an idea: make Keystone supports CockorachDB.
