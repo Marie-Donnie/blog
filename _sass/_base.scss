@@ -152,6 +152,44 @@ pre {
     }
 }
 
+/**
+ * Table
+ */
+table {
+    margin: auto;
+    border-top: 2px solid;
+    border-collapse: collapse
+}
+table,
+thead {
+    border-bottom: 2px solid
+}
+table td+td,
+table th+th {
+   // border-left: 1px solid gray
+}
+table tr {
+    border-top: 1px solid #d3d3d3
+}
+td,
+th {
+    padding: 5px 5px;
+    vertical-align: middle
+}
+th.org-center,
+th.org-left,
+th.org-right {
+    text-align: left
+}
+td.org-right {
+    text-align: right
+}
+td.org-left {
+    text-align: left
+}
+td.org-center {
+    text-align: center
+}
 
 
 /**

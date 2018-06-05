@@ -11,7 +11,7 @@ email: discovery-contact@inria.fr
 description: "The <a href='https://beyondtheclouds.github.io/'>Discovery</a> Initiative.
   Discover what could happen beyond the Clouds!"
 baseurl: "/blog" # the subpath of your site, e.g. /blog
-url: "https://beyondtheclouds.github.io/blog/" # the base hostname & protocol for your site
+url: "https://beyondtheclouds.github.io/" # the base hostname & protocol for your site
 twitter_username: BeyondClouds_io
 repository: "BeyondTheClouds/blog"
 #github_username:
