@@ -14,9 +14,12 @@
 .src {
     background: #fff;
     color: #dcdccc;
-    @extend %vertical-rhythm;
 
     .org-src-container & {
         background: #3f3f3f;
     }
+}
+
+.org-src-container {
+    @extend %vertical-rhythm;
 }
