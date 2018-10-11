@@ -28,3 +28,5 @@ key factors: scalability and locality. We reached up to ten thousands
 communicating agents, and results show that a router-based deployment offers a
 better trade-off between locality and load-balancing. Broker-based suffers from
 its centralized model which impact the achieved locality and scalability.
+
+*Paper available on [HAL](https://hal.inria.fr/hal-01891567).*
