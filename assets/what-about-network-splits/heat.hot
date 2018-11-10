@@ -1,0 +1,384 @@
+heat_template_version: 2013-05-23
+
+description:
+  This Heat template creates a pair of networks plugged into the same router.
+  Master instances and slave instances are connected into different networks.
+
+parameters:
+  image:
+    type: string
+    description: Name of image to use for servers
+  flavor:
+    type: string
+    description: Flavor to use for servers
+  external_net:
+    type: string
+    description: ID or name of external network for which floating IP addresses will be allocated
+  server_endpoint:
+    type: string
+    description: Server endpoint address
+  dns_nameservers:
+    type: comma_delimited_list
+    description: DNS nameservers for the subnets
+
+resources:
+  east_private_net:
+    type: OS::Neutron::Net
+    properties:
+      name: Network1
+
+  east_private_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: east_private_net }
+      cidr: 10.1.0.0/16
+      dns_nameservers: { get_param: dns_nameservers }
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info:
+        network: { get_param: external_net }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet_id: { get_resource: east_private_subnet }
+
+  west_private_net:
+    type: OS::Neutron::Net
+    properties:
+      name: Network2
+
+  west_private_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: west_private_net }
+      cidr: 10.2.0.0/16
+      dns_nameservers: { get_param: dns_nameservers }
+
+  router_interface_2:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet_id: { get_resource: west_private_subnet }
+
+  server_security_group:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: security_group
+      rules: [
+        {remote_ip_prefix: 0.0.0.0/0,
+        direction: egress,
+        protocol: tcp,
+        port_range_min: 1,
+        port_range_max: 65535},
+        {remote_ip_prefix: 0.0.0.0/0,
+        direction: ingress,
+        protocol: tcp,
+        port_range_min: 1,
+        port_range_max: 65535},
+        {remote_ip_prefix: 0.0.0.0/0,
+        direction: egress,
+        protocol: udp,
+        port_range_min: 1,
+        port_range_max: 65535},
+        {remote_ip_prefix: 0.0.0.0/0,
+        direction: ingress,
+        protocol: udp,
+        port_range_min: 1,
+        port_range_max: 65535},
+        {remote_ip_prefix: 0.0.0.0/0,
+        direction: egress,
+        protocol: icmp},
+        {remote_ip_prefix: 0.0.0.0/0,
+        direction: ingress,
+        protocol: icmp}]
+
+
+  anti_affinity_1:
+    type: OS::Nova::ServerGroup
+    properties:
+      name: anti_affinity_1
+      policies:
+        - anti-affinity
+
+  anti_affinity_2:
+    type: OS::Nova::ServerGroup
+    properties:
+      name: anti_affinity_2
+      policies:
+        - anti-affinity
+
+  VM1:
+    type: OS::Nova::Server
+    properties:
+      name: VM1
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: "nova"
+      networks:
+        - port: { get_resource: VM1_port }
+      scheduler_hints:
+        group: { get_resource: anti_affinity_1 }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/sh
+            screen -dmS shaker-agent-screen shaker-agent --server-endpoint=$SERVER_ENDPOINT --agent-id=$VMID
+          params:
+            "$SERVER_ENDPOINT": { get_param: server_endpoint }
+            "$VMID": VM1
+
+  VM1_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: east_private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: east_private_subnet }
+      security_groups: [{ get_resource: server_security_group }]
+
+  VM1_floating_ip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: public
+
+  VM1_association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: VM1_floating_ip }
+      server_id: { get_resource: VM1 }
+
+  VM2:
+    type: OS::Nova::Server
+    properties:
+      name: VM2
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: "nova"
+      networks:
+        - port: { get_resource: VM2_port }
+      scheduler_hints:
+        group: { get_resource: anti_affinity_1 }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/sh
+            screen -dmS shaker-agent-screen shaker-agent --server-endpoint=$SERVER_ENDPOINT --agent-id=$VMID
+          params:
+            "$SERVER_ENDPOINT": { get_param: server_endpoint }
+            "$VMID": VM2
+
+  VM2_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: west_private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: west_private_subnet }
+      security_groups: [{ get_resource: server_security_group }]
+
+  VM2_floating_ip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: public
+
+  VM2_association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: VM2_floating_ip }
+      server_id: { get_resource: VM2 }
+
+  VM3:
+    type: OS::Nova::Server
+    properties:
+      name: VM3
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: "nova"
+      networks:
+        - port: { get_resource: VM3_port }
+      scheduler_hints:
+        group: { get_resource: anti_affinity_1 }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/sh
+            screen -dmS shaker-agent-screen shaker-agent --server-endpoint=$SERVER_ENDPOINT --agent-id=$VMID
+          params:
+            "$SERVER_ENDPOINT": { get_param: server_endpoint }
+            "$VMID": VM3
+
+  VM3_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: east_private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: east_private_subnet }
+      security_groups: [{ get_resource: server_security_group }]
+
+  VM3_floating_ip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: public
+
+  VM3_association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: VM3_floating_ip }
+      server_id: { get_resource: VM3 }
+
+  VM4:
+    type: OS::Nova::Server
+    properties:
+      name: VM4
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: "nova"
+      networks:
+        - port: { get_resource: VM4_port }
+      scheduler_hints:
+        group: { get_resource: anti_affinity_2 }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/sh
+            screen -dmS shaker-agent-screen shaker-agent --server-endpoint=$SERVER_ENDPOINT --agent-id=$VMID
+          params:
+            "$SERVER_ENDPOINT": { get_param: server_endpoint }
+            "$VMID": VM4
+
+  VM4_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: west_private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: west_private_subnet }
+      security_groups: [{ get_resource: server_security_group }]
+
+  VM4_floating_ip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: public
+
+  VM4_association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: VM4_floating_ip }
+      server_id: { get_resource: VM4 }
+
+  VM5:
+    type: OS::Nova::Server
+    properties:
+      name: VM5
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: "nova"
+      networks:
+        - port: { get_resource: VM5_port }
+      scheduler_hints:
+        group: { get_resource: anti_affinity_2 }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/sh
+            screen -dmS shaker-agent-screen shaker-agent --server-endpoint=$SERVER_ENDPOINT --agent-id=$VMID
+          params:
+            "$SERVER_ENDPOINT": { get_param: server_endpoint }
+            "$VMID": VM5
+
+  VM5_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: east_private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: east_private_subnet }
+      security_groups: [{ get_resource: server_security_group }]
+
+  VM5_floating_ip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: public
+
+  VM5_association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: VM5_floating_ip }
+      server_id: { get_resource: VM5 }
+
+  VM6:
+    type: OS::Nova::Server
+    properties:
+      name: VM6
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      availability_zone: "nova"
+      networks:
+        - port: { get_resource: VM6_port }
+      scheduler_hints:
+        group: { get_resource: anti_affinity_2 }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/sh
+            screen -dmS shaker-agent-screen shaker-agent --server-endpoint=$SERVER_ENDPOINT --agent-id=$VMID
+          params:
+            "$SERVER_ENDPOINT": { get_param: server_endpoint }
+            "$VMID": VM6
+
+  VM6_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: west_private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: west_private_subnet }
+      security_groups: [{ get_resource: server_security_group }]
+
+  VM6_floating_ip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: public
+
+  VM6_association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: VM6_floating_ip }
+      server_id: { get_resource: VM6 }
+
+
+outputs:
+  VM1_instance_name:
+    value: { get_attr: [ VM1, instance_name ] }
+  VM1_ip:
+    value: { get_attr: [ VM1, networks, { get_attr: [east_private_net, name] }, 0 ] }
+
+  VM2_instance_name:
+    value: { get_attr: [ VM2, instance_name ] }
+  VM2_ip:
+    value: { get_attr: [ VM2, networks, { get_attr: [west_private_net, name] }, 0 ] }
+
+  VM3_instance_name:
+    value: { get_attr: [ VM3, instance_name ] }
+  VM3_ip:
+    value: { get_attr: [ VM3, networks, { get_attr: [east_private_net, name] }, 1 ] }
+
+  VM4_instance_name:
+    value: { get_attr: [ VM4, instance_name ] }
+  VM4_ip:
+    value: { get_attr: [ VM4, networks, { get_attr: [west_private_net, name] }, 1 ] }
+
+  VM5_instance_name:
+    value: { get_attr: [ VM5, instance_name ] }
+  VM5_ip:
+    value: { get_attr: [ VM5, networks, { get_attr: [east_private_net, name] }, 2 ] }
+
+  VM6_instance_name:
+    value: { get_attr: [ VM6, instance_name ] }
+  VM6_ip:
+    value: { get_attr: [ VM6, networks, { get_attr: [west_private_net, name] }, 2 ] }
