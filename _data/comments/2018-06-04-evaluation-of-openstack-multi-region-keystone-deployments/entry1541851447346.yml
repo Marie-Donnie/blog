@@ -1,0 +1,6 @@
+_id: b97526f0-e4e0-11e8-83ca-9de4535f5dea
+name: Ronan-A. Cherrueau
+email: 3cdd95c2e5510e9c1e4778ccfcce3f50
+url: 'https://rcherrueau.github.io/'
+message: "Hi Patrick,\r\n\r\nGood question, we did experiments with CockroachDB version 2.0.1. Recently, CockroachDB published version 2.1 that comes with two exciting enhancements that should change results above:\r\n\r\n- [Better contention handling at high concurrency](https://github.com/cockroachdb/cockroach/pull/25014#issuecomment-393336079)\r\n- Read can be local read (when not running a transaction)\r\n\r\nWe plan to redo experiments with CockroachDB 2.1 and finish this article based on the new results. But we currently struggle to run OpenStack on top of it."
+date: 1541851447
