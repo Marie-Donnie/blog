@@ -6,8 +6,6 @@ author: Marie Delavergne
 categories: OpenStack crowdsourced edge
 ---
 
-## Introduction ##
-
 The
 [Inria&rsquo;s Discovery initiative](https://beyondtheclouds.github.io/) focus
 on challenges around the Edge. In this study, we deal with the
