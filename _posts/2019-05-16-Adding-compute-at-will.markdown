@@ -19,7 +19,11 @@ addition/removal of any remote compute resource WANWide, leveraging an
 OpenVPN flat network when needed. This framework can be
 found [here](https://github.com/badock/enos_openvpn). It is based
 on [Enos](https://github.com/BeyondTheClouds/enos)
-and [OpenVPN](https://openvpn.net/), as the same would suggest.
+and [OpenVPN](https://openvpn.net/), as the same would suggest. The
+original enos openvpn was made
+by [Jonathan Pastor](http://www.jonathanpastor.fr/) using bash
+scripts, and I have translated them to ansible before enabling the
+adding, removal and rejoining of a node.
 
 
 The example here is to have an ISP that would provide compute
